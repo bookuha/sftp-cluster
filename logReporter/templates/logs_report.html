@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logs Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .server-header {
+            font-size: 1.2em;
+            margin-top: 20px;
+            color: #333;
+            font-weight: bold;
+        }
+        .sender-header {
+            font-size: 1.1em;
+            margin-top: 10px;
+            cursor: pointer;
+            color: #0056b3;
+            user-select: none;
+        }
+        .log-count {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .logs-table {
+            display: none; /* Initially hide the table */
+            margin-top: 10px;
+        }
+    </style>
+    <script>
+        function toggleVisibility(senderId) {
+            var table = document.getElementById(senderId);
+            if (table.style.display === "none") {
+                table.style.display = "table";
+            } else {
+                table.style.display = "none";
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Logs Report</h1>
+
+    {% for server_name, data in all_logs.items() %}
+        <div class="server-header">{{ server_name }} (Total Senders: {{ data.counts | length }})</div>
+
+        {% for sender_name, logs in data.logs.items() %}
+            <div class="sender-header" onclick="toggleVisibility('{{ server_name }}-{{ sender_name }}')">
+                Sender: {{ sender_name }} (Log Count: {{ data.counts[sender_name] }}) (click to collapse/expand)
+            </div>
+            <table id="{{ server_name }}-{{ sender_name }}" class="logs-table">
+                <thead>
+                    <tr>
+                        <th>Filename</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Sender Name</th>
+                        <th>Content</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in logs %}
+                        <tr>
+                            <td>{{ log.filename }}</td>
+                            <td>{{ log.date }}</td>
+                            <td>{{ log.time }}</td>
+                            <td>{{ log.senderName }}</td>
+                            <td>{{ log.content }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endfor %}
+    {% endfor %}
+</body>
+</html>

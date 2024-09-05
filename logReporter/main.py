@@ -4,6 +4,7 @@
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
 # SFTP server details
+import os
 from datetime import datetime
 
 import paramiko as paramiko
@@ -11,12 +12,15 @@ from flask import app, render_template, Flask
 
 app = Flask(__name__)
 
+AM_I_IN_DOCKER = os.getenv('AM_I_IN_DOCKER', 'False').lower() == 'true'
+hostname = 'host.docker.internal' if AM_I_IN_DOCKER else '127.0.0.1'
+
 sftp_servers = [
-    {'name': 'sftp-1', 'hostname': '127.0.0.1', 'port': 2222, 'username': 'sftp', 'password': 'pass',
+    {'name': 'sftp-1', 'hostname': hostname, 'port': 2222, 'username': 'sftp', 'password': 'pass',
      'directory': '/uploads/'},
-    {'name': 'sftp-2', 'hostname': '127.0.0.1', 'port': 2200, 'username': 'sftp', 'password': 'pass',
+    {'name': 'sftp-2', 'hostname': hostname, 'port': 2200, 'username': 'sftp', 'password': 'pass',
      'directory': '/uploads/'},
-    {'name': 'sftp-3', 'hostname': '127.0.0.1', 'port': 2201, 'username': 'sftp', 'password': 'pass',
+    {'name': 'sftp-3', 'hostname': hostname, 'port': 2201, 'username': 'sftp', 'password': 'pass',
      'directory': '/uploads/'},
 ]
 
